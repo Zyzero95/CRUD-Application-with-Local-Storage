@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD-Assignment with Local Storage</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <!-- Main Title -->
+        <h1 id="main-title">Pokémon Team Builder</h1>
+    </header>
+    <!-- Main -->
+    <main>
+        <!-- Fill empty space with color via CSS // might change this. -->
+        <div id="left-fill-color"></div>
+        <!-- Fill empty space with color via CSS // might change this. -->
+        <div id="left-line"></div>
+        <!-- Pokemon Section, JS will dynamically create HTML elements for this section. -->
+        <section id="pokemon-section"></section>
+        <!-- Fill empty space with color via CSS // might change this. -->
+        <div id="right-fill-color"></div>
+        <!-- Fill empty space with color via CSS // might change this. -->
+        <div id="right-line"></div>
+    </main>
+    <!-- Footer -->
+    <footer>
+        <!-- Pokemon Data Section where the input value will be used to fetch data from the API. -->
+        <section id="pokemon-data-section">
+            <form id="pokemon-data-form">
+                <input type="text" name="pokemon-name" id="pokemon-name" placeholder="Pokémon name ex: Ditto" required>
+                <button type="submit" id="btn-submit">Add Pokémon</button>
+            </form>
+        </section>
+    </footer>
+</body>
+</html>
