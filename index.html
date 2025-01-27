@@ -29,10 +29,18 @@
     <!-- Footer -->
     <footer>
         <!-- Pokemon Data Section where the input value will be used to fetch data from the API. -->
-        <section id="pokemon-name-section">
-            <form id="pokemon-data-form">
+        <section id="pokemon-new-section">
+            <form id="pokemon-new-data-form">
+                <h2>Add New Pokémon</h2>
                 <input type="text" name="pokemon-name" id="pokemon-name" placeholder="Pokémon name ex: Ditto" required>
-                <button type="submit" id="btn-submit">Add Pokémon</button>
+                <button type="submit" id="btn-new-submit">Add Pokémon</button>
+            </form>
+        </section>
+        <section id="pokemon-load-section">
+            <form id="pokemon-load-data-form">
+                <h2>Load Saved Pokémon</h2>
+                <input type="text" name="pokemon-load-name" id="pokemon-load-name" placeholder="Pokémon name ex: Ditto" required>
+                <button type="submit" id="btn-load-submit">Load Pokémon</button>
             </form>
         </section>
     </footer>

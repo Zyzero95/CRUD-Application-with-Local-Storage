@@ -3,12 +3,26 @@ const API_URL = "https://pokeapi.co/api/v2/";
 
 // Theme - A Pokémon Teambuilder. (Choose Pokémon, Moveset, Regular/Shiny, Ability) Up to 6 Pokémon in a team.
 
-// Empty array used for updating Local Storage
+// Empty object used for updating Local Storage
 let localStorageList = [];
+
+let localStorageObject = {
+    Sprite: "",
+    SpiteAlt: "",
+    ShinySprite: "",
+    isShiny: false,
+    Name: "",
+    Types: [],
+    Move1: [],
+    Move2: [],
+    Move3: [],
+    Move4: [],
+    Abilities: []
+};
 
 // DOM Selectors
 const pokemonSectionEl = document.getElementById("pokemon-section");
-const pokemonDataFormEl = document.getElementById("pokemon-data-form");
+const pokemonDataFormEl = document.getElementById("pokemon-new-data-form");
 
 // When submit is clicked get value from input and then fetch API.
 pokemonDataFormEl.addEventListener("submit", (event) => {
@@ -17,9 +31,20 @@ pokemonDataFormEl.addEventListener("submit", (event) => {
     fetchPokemonData(pokemonName);
 });
 
+// Check which button is clicked (either delete or save button) and execute the function of the corresponding button.
+pokemonSectionEl.addEventListener("click", (event) => {
+    if(event.target.classList.contains("delete-button")){
+        deletePokemon(event.target);
+    }
+    else if(event.target.classList.contains("save-button")){
+        savePokemon(event.target);
+    }
+});
+
+// Listens if checkbox is being changed, and if it does, execute function below
 pokemonSectionEl.addEventListener("change", (event) => {
-    if(event.target.classList.contains("pokemon-shiny-checkbox"){
-        
+    if(event.target.classList.contains("pokemon-shiny-checkbox")){
+        changeSprite(event.target);
     }
 });
 
@@ -30,6 +55,7 @@ async function fetchPokemonData(pokemonName)  {
     if(pokemonSectionEl.childElementCount >= 6){
 
     }
+
     else{
         try {
             const response = await fetch(pokemonUrl);
@@ -60,8 +86,17 @@ function renderPokemon(json){
     let pokemonSprite = document.createElement("img");
     pokemonSprite.classList.add("pokemon-sprite");
     pokemonSprite.src = json.sprites.front_default;
-    pokemonSprite.alt = "It's the Pokemon of your choice!";
+    pokemonSprite.alt = "It's the Pokémon of your choice!";
+    pokemonSprite.style.display = "block";
     pokemonDataContainer.appendChild(pokemonSprite);
+
+    // Pokemon Shiny Sprite
+    let pokemonShinySprite = document.createElement("img");
+    pokemonShinySprite.classList.add("pokemon-shiny-sprite");
+    pokemonShinySprite.src = json.sprites.front_shiny;
+    pokemonShinySprite.alt = "It's the shiny version of the Pokémon of your choice!"
+    pokemonShinySprite.style.display = "none";
+    pokemonDataContainer.appendChild(pokemonShinySprite);
 
     // Pokemon Name and Type Section
     let pokemonNameSection = document.createElement("section");
@@ -81,11 +116,11 @@ function renderPokemon(json){
     pokemonType.classList.add("pokemon-data-type");
 
     for(let i = 0; i < pokemonTypesArray.length; i++){
-        if(pokemonTypesArray[1] === null){
-            pokemonType.innerHTML = `${pokemonTypesArray[i].type.name.toUpperCase()}`;
+        if(pokemonTypesArray[1] === undefined){
+            pokemonType.innerHTML = `Type: ${pokemonTypesArray[i].type.name.toUpperCase()}`;
         }
         else {
-            pokemonType.innerHTML = `${pokemonTypesArray[0].type.name.toUpperCase()} / ${pokemonTypesArray[1].type.name.toUpperCase()}`;
+            pokemonType.innerHTML = `Type: ${pokemonTypesArray[0].type.name.toUpperCase()} / ${pokemonTypesArray[1].type.name.toUpperCase()}`;
         }
     }
 
@@ -190,5 +225,46 @@ function renderPokemon(json){
 
     pokemonAbilityForm.appendChild(pokemonAbilities);
     pokemonDataContainer.appendChild(pokemonAbilityForm);
+
+    // Save Button
+    let saveButton = document.createElement("button");
+    saveButton.classList.add("save-button");
+    saveButton.innerHTML = "Save";
+    pokemonDataContainer.appendChild(saveButton);
+
+    // Delete Button
+    let deleteButton = document.createElement("button");
+    deleteButton.classList.add("delete-button");
+    deleteButton.innerHTML = "Delete";
+    pokemonDataContainer.appendChild(deleteButton);
 }
 
+// Delete current Pokémon Element
+function deletePokemon(e){
+    e.parentElement.remove();
+}
+
+// Save current Pokémon Element to object => array => localStorage
+function savePokemon(e){
+    console.log(e.parentElement);
+    localStorageObject.Sprite = e.parentElement.children[0].src;
+    localStorageObject.SpiteAlt = e.parentElement.children[0].alt;
+    localStorageObject.ShinySprite = e.parentElement.children[1].src;
+    localStorageObject.Name = e.parentElement.children[2].children[0].innerHTML;
+    localStorageObject.Types = e.parentElement.children[2].children[1].innerHTML;
+
+    console.log(localStorageObject);
+    
+}
+
+// Checks if shiny checkbox is checked, then change display style for the two different img elements and the other way around
+function changeSprite(e){
+    if(e.checked){
+        e.parentElement.parentElement.children[0].style.display = "none";
+        e.parentElement.parentElement.children[1].style.display = "block";
+    }
+    else {
+        e.parentElement.parentElement.children[0].style.display = "block";
+        e.parentElement.parentElement.children[1].style.display = "none";
+    }
+}

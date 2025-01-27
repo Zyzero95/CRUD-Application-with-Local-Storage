@@ -4,6 +4,11 @@
     padding: 0;
 }
 
+@font-face {
+    font-family:'PokemonSolid';
+    src: url('./Fonts/PokemonSolid.ttf');
+}
+
 img {
     object-fit: contain;
     width: 100%;
@@ -24,6 +29,14 @@ header {
     display: grid;
     justify-content: center;
     align-items: center;
+
+    h1 {
+        font-family: 'PokemonSolid', sans-serif;
+        color: #ffcc03;
+        -webkit-text-stroke-width: 1.5px;
+        font-size: 64px;
+        -webkit-text-stroke-color: rgb(70, 70, 246);
+    }
 }
 
 /* Main */
@@ -54,12 +67,12 @@ main {
         border: 30px solid black;
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        grid-template-rows: repeat(2, 1fr);
+        grid-template-rows: repeat(2, auto);
 
         .pokemon-data-container {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            grid-template-rows: repeat(3, auto);
+            grid-template-rows: repeat(4, auto);
 
             /* Metallic effect taken from URL: https://ibelick.com/blog/creating-metallic-effect-with-css */
             background: linear-gradient(
@@ -78,7 +91,8 @@ main {
 
             margin: 0.5rem;
 
-            .pokemon-sprite{
+            .pokemon-sprite,
+            .pokemon-shiny-sprite{
                 grid-column: span 2;
                 grid-row: 1;
             }
@@ -107,6 +121,18 @@ main {
                 grid-row: 3;
                 text-align: center;
             }
+
+            .save-button {
+                grid-column: 1;
+                grid-row: 4;
+                margin: 1rem;
+            }
+
+            .delete-button {
+                grid-column: 2;
+                grid-row: 4;
+                margin: 1rem;
+            }
         }
     }
 
@@ -129,13 +155,69 @@ main {
 footer {
     grid-row: 3;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(2, auto);
+    grid-template-columns: repeat(2, auto);
+    justify-content: space-evenly;
 
     /* Pokemon Data Section Styling */
-    #pokemon-name-section {
-        grid-column: 2 / span 2;
+    #pokemon-new-section,
+    #pokemon-load-section {
         display: grid;
-        justify-content: space-evenly;
+        grid-template-rows: repeat(2, auto);
         margin-top: 1rem;
+
+        #pokemon-new-data-form,
+        #pokemon-load-data-form {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            grid-template-rows: repeat(2, auto);
+
+            h2 {
+                grid-column: span 2;
+                grid-row: 1;
+                justify-self: center;
+                align-self: center;
+                font-family: 'PokemonSolid', sans-serif;
+                color: #ffcc03;
+                font-size: 32px;
+                -webkit-text-stroke-width: 1.5px;
+                -webkit-text-stroke-color: rgb(70, 70, 246);
+            }
+
+            #pokemon-name,
+            #pokemon-load-name {
+                grid-column: 1;
+                grid-row: 2;
+                align-self: center;
+            }
+
+            #btn-new-submit,
+            #btn-load-submit {
+                grid-column: 2;
+                grid-row: 2;
+                justify-self: center;
+                align-self: center;
+                width: 90%;
+            }
+        }
+    }
+}
+
+@media (width <= 1142px) {
+
+    main {
+        #pokemon-section {
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+        }
+    }
+}
+
+@media (width <= 800px){
+    main {
+        #pokemon-section {
+            grid-template-columns: 1fr;
+            grid-template-rows: repeat(6, 1fr);
+        }
     }
 }
