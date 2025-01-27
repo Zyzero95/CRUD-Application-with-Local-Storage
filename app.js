@@ -10,6 +10,7 @@ let localStorageObject = {
     Sprite: "",
     SpiteAlt: "",
     ShinySprite: "",
+    ShinySpriteAlt: "",
     isShiny: false,
     Name: "",
     Types: [],
@@ -22,13 +23,21 @@ let localStorageObject = {
 
 // DOM Selectors
 const pokemonSectionEl = document.getElementById("pokemon-section");
-const pokemonDataFormEl = document.getElementById("pokemon-new-data-form");
+const pokemonNewDataFormEl = document.getElementById("pokemon-new-data-form");
+const pokemonLoadDataFormEl = document.getElementById("pokemon-load-data-form");
 
 // When submit is clicked get value from input and then fetch API.
-pokemonDataFormEl.addEventListener("submit", (event) => {
+pokemonNewDataFormEl.addEventListener("submit", (event) => {
     event.preventDefault();
     const pokemonName = document.getElementById("pokemon-name").value.trim().toLowerCase();
     fetchPokemonData(pokemonName);
+});
+
+// When submit is clicked get value from input and compare it to LocalStorage key names then render data.
+pokemonLoadDataFormEl.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const pokemonName = document.getElementById("pokemon-load-name").value.trim().toUpperCase();
+    localStoragePokemonData(pokemonName);
 });
 
 // Check which button is clicked (either delete or save button) and execute the function of the corresponding button.
@@ -65,6 +74,8 @@ async function fetchPokemonData(pokemonName)  {
             }
     
             const json = await response.json();
+            console.log(json);
+            
             renderPokemon(json);
     
         } catch (error) {
@@ -74,8 +85,19 @@ async function fetchPokemonData(pokemonName)  {
     }
 }
 
+function localStoragePokemonData(pokemonName){
+    for(let i = 0; i < localStorage.length; i++){
+        if(localStorage.length === null){
+            console.error("You have no saved Pokemon.");
+        }
+        else {
+            localStorageList.push(JSON.parse(localStorage.getItem(`${pokemonName.toUpperCase()}`)));
+            console.log(localStorageList);
+        }
+    }
+}
+
 function renderPokemon(json){
-    console.log(json);
 
     // Pokemon Data Container
     let pokemonDataContainer = document.createElement("section");
@@ -246,15 +268,56 @@ function deletePokemon(e){
 
 // Save current Pokémon Element to object => array => localStorage
 function savePokemon(e){
-    console.log(e.parentElement);
+    // Save element data to LocalStorage Object
     localStorageObject.Sprite = e.parentElement.children[0].src;
     localStorageObject.SpiteAlt = e.parentElement.children[0].alt;
     localStorageObject.ShinySprite = e.parentElement.children[1].src;
+    localStorageObject.ShinySpriteAlt = e.parentElement.children[1].alt;
     localStorageObject.Name = e.parentElement.children[2].children[0].innerHTML;
     localStorageObject.Types = e.parentElement.children[2].children[1].innerHTML;
 
-    console.log(localStorageObject);
+    // Save element data array to LocalStorage Object
+
+    for(let i = 0; i < e.parentElement.children[3].children[0].children.length; i++){
+        localStorageObject.Move1[i] = e.parentElement.children[3].children[0].children[i].value;
+    }
+
+    for(let i = 0; i < e.parentElement.children[3].children[1].children.length; i++){
+        localStorageObject.Move2[i] = e.parentElement.children[3].children[1].children[i].value;
+    }
+
+    for(let i = 0; i < e.parentElement.children[3].children[2].children.length; i++){
+        localStorageObject.Move3[i] = e.parentElement.children[3].children[2].children[i].value;
+    }
+
+    for(let i = 0; i < e.parentElement.children[3].children[3].children.length; i++){
+        localStorageObject.Move4[i] = e.parentElement.children[3].children[3].children[i].value;
+    }
+
+    for(let i = 0; i < e.parentElement.children[5].children[0].children.length; i++){
+        localStorageObject.Abilities[i] = e.parentElement.children[5].children[0].children[i].value;
+    }
     
+    // Save Object to List.
+    localStorageList.push(localStorageObject);
+
+    // Make Object empty again.
+    localStorageObject = {
+        Sprite: "",
+        SpiteAlt: "",
+        ShinySprite: "",
+        ShinySpriteAlt: "",
+        isShiny: false,
+        Name: "",
+        Types: [],
+        Move1: [],
+        Move2: [],
+        Move3: [],
+        Move4: [],
+        Abilities: []
+    };
+    
+    saveToLocalStorage(localStorageList);
 }
 
 // Checks if shiny checkbox is checked, then change display style for the two different img elements and the other way around
@@ -262,9 +325,17 @@ function changeSprite(e){
     if(e.checked){
         e.parentElement.parentElement.children[0].style.display = "none";
         e.parentElement.parentElement.children[1].style.display = "block";
+        localStorageObject.isShiny = true;
     }
     else {
         e.parentElement.parentElement.children[0].style.display = "block";
         e.parentElement.parentElement.children[1].style.display = "none";
+        localStorageObject.isShiny = false;
     }
+}
+
+// For every index in list, save it to LocalStorage.
+function saveToLocalStorage(array){
+    localStorage.setItem(`${array[0].Name}`, JSON.stringify(array));
+    localStorageList = [];
 }
