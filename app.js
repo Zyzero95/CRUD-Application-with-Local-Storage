@@ -16,6 +16,11 @@ let localStorageObject = {
     Move2: [],
     Move3: [],
     Move4: [],
+    Move1Selected: "",
+    Move2Selected: "",
+    Move3Selected: "",
+    Move4Selected: "",
+    AbilitySelected: "",
     Abilities: []
 };
 
@@ -234,6 +239,9 @@ function renderPokemon(json){
             pokemonMove1Option.value = json[0][0].Move1[i];
             pokemonMove1Option.innerHTML = json[0][0].Move1[i];
             pokemonMove1.appendChild(pokemonMove1Option);
+            if(json[0][0].Move1[i] === json[0][0].Move1Selected){
+                pokemonMove1Option.selected = true;
+            }
         }
         for(let i = 0; i < json[0][0].Move2.length; i++){
 
@@ -241,6 +249,9 @@ function renderPokemon(json){
             pokemonMove2Option.value = json[0][0].Move2[i];
             pokemonMove2Option.innerHTML = json[0][0].Move2[i];
             pokemonMove2.appendChild(pokemonMove2Option);
+            if(json[0][0].Move2[i] === json[0][0].Move2Selected){
+                pokemonMove2Option.selected = true;
+            }
         }
         for(let i = 0; i < json[0][0].Move3.length; i++){
 
@@ -248,6 +259,9 @@ function renderPokemon(json){
             pokemonMove3Option.value = json[0][0].Move3[i];
             pokemonMove3Option.innerHTML = json[0][0].Move3[i];
             pokemonMove3.appendChild(pokemonMove3Option);
+            if(json[0][0].Move3[i] === json[0][0].Move3Selected){
+                pokemonMove3Option.selected = true;
+            }
         }
         for(let i = 0; i < json[0][0].Move4.length; i++){
 
@@ -255,6 +269,9 @@ function renderPokemon(json){
             pokemonMove4Option.value = json[0][0].Move4[i];
             pokemonMove4Option.innerHTML = json[0][0].Move4[i];
             pokemonMove4.appendChild(pokemonMove4Option);
+            if(json[0][0].Move4[i] === json[0][0].Move4Selected){
+                pokemonMove4Option.selected = true;
+            }
         }
     }
     else{
@@ -343,6 +360,9 @@ function renderPokemon(json){
             pokemonAbility.value = json[0][0].Abilities[i];
             pokemonAbility.innerHTML = json[0][0].Abilities[i];
             pokemonAbilities.appendChild(pokemonAbility);
+            if(json[0][0].Abilities[i] === json[0][0].AbilitySelected){
+                pokemonAbility.selected = true;
+            }
         }
     }
     else{
@@ -394,7 +414,7 @@ function localStoragePokemonData(pokemonName){
 function savePokemon(e){
 
     console.log(e.parentElement);
-    console.log(e.parentElement.getElementsByClassName("move-select-1")[0]);
+    console.log(e.parentElement.getElementsByClassName("move-select-1")[0].value);
     
     
     // Save element data to LocalStorage Object
@@ -408,23 +428,28 @@ function savePokemon(e){
     // Save element data for moves
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-1")[0].length; i++){
         localStorageObject.Move1[i] = e.parentElement.getElementsByClassName("move-select-1")[0][i].value;
+        localStorageObject.Move1Selected = e.parentElement.getElementsByClassName("move-select-1")[0].value;
     }
 
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-2")[0].length; i++){
         localStorageObject.Move2[i] = e.parentElement.getElementsByClassName("move-select-2")[0][i].value;
+        localStorageObject.Move2Selected = e.parentElement.getElementsByClassName("move-select-2")[0].value;
     }
 
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-3")[0].length; i++){
         localStorageObject.Move3[i] = e.parentElement.getElementsByClassName("move-select-3")[0][i].value;
+        localStorageObject.Move3Selected = e.parentElement.getElementsByClassName("move-select-3")[0].value;
     }
 
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-4")[0].length; i++){
         localStorageObject.Move4[i] = e.parentElement.getElementsByClassName("move-select-4")[0][i].value;
+        localStorageObject.Move4Selected = e.parentElement.getElementsByClassName("move-select-4")[0].value;
     }
 
     // Save element data for abilities
     for(let i = 0; i < e.parentElement.getElementsByClassName("pokemon-ability-select")[0].length; i++){
         localStorageObject.Abilities[i] = e.parentElement.getElementsByClassName("pokemon-ability-select")[0][i].value;
+        localStorageObject.AbilitySelected = e.parentElement.getElementsByClassName("pokemon-ability-select")[0].value;
     }
     
     // Save Object to List.
