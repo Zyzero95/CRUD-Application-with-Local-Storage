@@ -102,11 +102,13 @@ function renderPokemon(json){
     // Pokemon Data Container
     let pokemonDataContainer = document.createElement("section");
     pokemonDataContainer.classList.add("pokemon-data-container");
+    pokemonDataContainer.id = "pokemon-data-container";
     pokemonSectionEl.appendChild(pokemonDataContainer);
 
     // Pokemon Sprite
     let pokemonSprite = document.createElement("img");
     pokemonSprite.classList.add("pokemon-sprite");
+    pokemonSprite.id = "pokemon-sprite";
 
     // Check if the Pokemon data is added(API) or loaded(LocalStorage)
     if(Array.isArray(json)){
@@ -209,15 +211,19 @@ function renderPokemon(json){
 
     // Move Selection 1
     let pokemonMove1 = document.createElement("select");
+    pokemonMove1.classList.add("move-select-1");
 
     // Move Selection 2
     let pokemonMove2 = document.createElement("select");
+    pokemonMove2.classList.add("move-select-2");
 
     // Move Selection 3
     let pokemonMove3 = document.createElement("select");
+    pokemonMove3.classList.add("move-select-3");
 
     // Move Selection 4
     let pokemonMove4 = document.createElement("select");
+    pokemonMove4.classList.add("move-select-4");
 
     // Store all moves learned by this Pokemon in each select to be able to change your selected moves.
     if(Array.isArray(json)){
@@ -326,6 +332,7 @@ function renderPokemon(json){
 
     // Pokemon Ability Selection
     let pokemonAbilities = document.createElement("select");
+    pokemonAbilities.classList.add("pokemon-ability-select");
 
     // Store all abilities for this Pokemon
 
@@ -385,32 +392,39 @@ function localStoragePokemonData(pokemonName){
 
 // Save current Pokémon Element to object => array => localStorage
 function savePokemon(e){
+
+    console.log(e.parentElement);
+    console.log(e.parentElement.getElementsByClassName("move-select-1")[0]);
+    
+    
     // Save element data to LocalStorage Object
-    localStorageObject.Sprite = e.parentElement.children[0].src;
-    localStorageObject.ShinySprite = e.parentElement.children[1].src;
-    localStorageObject.Name = e.parentElement.children[2].children[0].innerHTML;
-    localStorageObject.Types = e.parentElement.children[2].children[1].innerHTML;
+    localStorageObject.Sprite = e.parentElement.getElementsByClassName("pokemon-sprite")[0].src;
+    localStorageObject.ShinySprite = e.parentElement.getElementsByClassName("pokemon-shiny-sprite")[0].src;
+    localStorageObject.Name = e.parentElement.getElementsByClassName("pokemon-data-name")[0].innerHTML;
+    localStorageObject.Types = e.parentElement.getElementsByClassName("pokemon-data-type")[0].innerHTML;
 
     // Save element data array to LocalStorage Object
 
-    for(let i = 0; i < e.parentElement.children[3].children[0].children.length; i++){
-        localStorageObject.Move1[i] = e.parentElement.children[3].children[0].children[i].value;
+    // Save element data for moves
+    for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-1")[0].length; i++){
+        localStorageObject.Move1[i] = e.parentElement.getElementsByClassName("move-select-1")[0][i].value;
     }
 
-    for(let i = 0; i < e.parentElement.children[3].children[1].children.length; i++){
-        localStorageObject.Move2[i] = e.parentElement.children[3].children[1].children[i].value;
+    for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-2")[0].length; i++){
+        localStorageObject.Move2[i] = e.parentElement.getElementsByClassName("move-select-2")[0][i].value;
     }
 
-    for(let i = 0; i < e.parentElement.children[3].children[2].children.length; i++){
-        localStorageObject.Move3[i] = e.parentElement.children[3].children[2].children[i].value;
+    for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-3")[0].length; i++){
+        localStorageObject.Move3[i] = e.parentElement.getElementsByClassName("move-select-3")[0][i].value;
     }
 
-    for(let i = 0; i < e.parentElement.children[3].children[3].children.length; i++){
-        localStorageObject.Move4[i] = e.parentElement.children[3].children[3].children[i].value;
+    for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-4")[0].length; i++){
+        localStorageObject.Move4[i] = e.parentElement.getElementsByClassName("move-select-4")[0][i].value;
     }
 
-    for(let i = 0; i < e.parentElement.children[5].children[0].children.length; i++){
-        localStorageObject.Abilities[i] = e.parentElement.children[5].children[0].children[i].value;
+    // Save element data for abilities
+    for(let i = 0; i < e.parentElement.getElementsByClassName("pokemon-ability-select")[0].length; i++){
+        localStorageObject.Abilities[i] = e.parentElement.getElementsByClassName("pokemon-ability-select")[0][i].value;
     }
     
     // Save Object to List.
