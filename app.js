@@ -183,6 +183,10 @@ function renderPokemon(json){
         }
     }
 
+    if(Array.isArray(json)){
+        localStorageList = [];
+    }
+
     pokemonNameSection.appendChild(pokemonType);
     pokemonDataContainer.appendChild(pokemonNameSection);
 
@@ -297,6 +301,11 @@ function renderPokemon(json){
     let pokemonShinyCheckbox = document.createElement("input");
     pokemonShinyCheckbox.classList.add("pokemon-shiny-checkbox");
     pokemonShinyCheckbox.setAttribute("type", "checkbox");
+    if(Array.isArray(json)){
+        if(json[0][0].isShiny === true){
+            pokemonShinyCheckbox.checked = true;
+        }
+    }
     pokemonShinyContainer.appendChild(pokemonShinyCheckbox);
 
     pokemonDataContainer.appendChild(pokemonShinyContainer);
