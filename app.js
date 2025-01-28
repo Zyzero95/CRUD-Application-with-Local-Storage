@@ -8,9 +8,7 @@ let localStorageList = [];
 
 let localStorageObject = {
     Sprite: "",
-    SpiteAlt: "",
     ShinySprite: "",
-    ShinySpriteAlt: "",
     isShiny: false,
     Name: "",
     Types: [],
@@ -37,7 +35,12 @@ pokemonNewDataFormEl.addEventListener("submit", (event) => {
 pokemonLoadDataFormEl.addEventListener("submit", (event) => {
     event.preventDefault();
     const pokemonName = document.getElementById("pokemon-load-name").value.trim().toUpperCase();
-    localStoragePokemonData(pokemonName);
+    if(pokemonSectionEl.childElementCount >= 6){
+        console.error("You already have a full team!");
+    }
+    else{
+        localStoragePokemonData(pokemonName);
+    }
 });
 
 // Check which button is clicked (either delete or save button) and execute the function of the corresponding button.
@@ -53,7 +56,8 @@ pokemonSectionEl.addEventListener("click", (event) => {
 // Listens if checkbox is being changed, and if it does, execute function below
 pokemonSectionEl.addEventListener("change", (event) => {
     if(event.target.classList.contains("pokemon-shiny-checkbox")){
-        changeSprite(event.target);
+
+            changeSprite(event.target);
     }
 });
 
@@ -62,7 +66,7 @@ async function fetchPokemonData(pokemonName)  {
     const pokemonUrl = API_URL + `pokemon/${pokemonName}`;
 
     if(pokemonSectionEl.childElementCount >= 6){
-
+        console.error("You already have a full team!");
     }
 
     else{
@@ -74,7 +78,6 @@ async function fetchPokemonData(pokemonName)  {
             }
     
             const json = await response.json();
-            console.log(json);
             
             renderPokemon(json);
     
@@ -85,20 +88,25 @@ async function fetchPokemonData(pokemonName)  {
     }
 }
 
+// Get data from Local Storage to render saved Pokémon
 function localStoragePokemonData(pokemonName){
-    for(let i = 0; i < localStorage.length; i++){
-        if(localStorage.length === null){
-            console.error("You have no saved Pokemon.");
+    if(localStorage.length <= 0){
+        console.error("You have no saved Pokemon.");
+    }
+    else{
+        for(let i = 0; i < localStorage.length; i++){
+    
+            if(localStorage.key(i) === pokemonName.toUpperCase()){
+                localStorageList.push(JSON.parse(localStorage.getItem(`${pokemonName.toUpperCase()}`)));
+            }
         }
-        else {
-            localStorageList.push(JSON.parse(localStorage.getItem(`${pokemonName.toUpperCase()}`)));
-            console.log(localStorageList);
-        }
+        renderPokemon(localStorageList);
     }
 }
 
+// Render Pokémon data on the website
 function renderPokemon(json){
-
+    
     // Pokemon Data Container
     let pokemonDataContainer = document.createElement("section");
     pokemonDataContainer.classList.add("pokemon-data-container");
@@ -107,17 +115,41 @@ function renderPokemon(json){
     // Pokemon Sprite
     let pokemonSprite = document.createElement("img");
     pokemonSprite.classList.add("pokemon-sprite");
-    pokemonSprite.src = json.sprites.front_default;
+
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    if(Array.isArray(json)){
+        pokemonSprite.src = json[0][0].Sprite;
+    }
+    else {
+        pokemonSprite.src = json.sprites.front_default;
+    }
     pokemonSprite.alt = "It's the Pokémon of your choice!";
-    pokemonSprite.style.display = "block";
+    if(Array.isArray(json) && json[0][0].isShiny === true){
+        pokemonSprite.style.display = "none";
+    }
+    else{
+        pokemonSprite.style.display = "block";
+    }
     pokemonDataContainer.appendChild(pokemonSprite);
 
     // Pokemon Shiny Sprite
     let pokemonShinySprite = document.createElement("img");
     pokemonShinySprite.classList.add("pokemon-shiny-sprite");
-    pokemonShinySprite.src = json.sprites.front_shiny;
+
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    if(Array.isArray(json)){
+        pokemonShinySprite.src = json[0][0].ShinySprite;
+    }
+    else{
+        pokemonShinySprite.src = json.sprites.front_shiny;
+    }
     pokemonShinySprite.alt = "It's the shiny version of the Pokémon of your choice!"
-    pokemonShinySprite.style.display = "none";
+    if(Array.isArray(json) && json[0][0].isShiny === true){
+        pokemonShinySprite.style.display = "block";
+    }
+    else{
+        pokemonShinySprite.style.display = "none";
+    }
     pokemonDataContainer.appendChild(pokemonShinySprite);
 
     // Pokemon Name and Type Section
@@ -127,7 +159,14 @@ function renderPokemon(json){
     // Pokemon Name
     let pokemonName = document.createElement("p");
     pokemonName.classList.add("pokemon-data-name");
-    pokemonName.innerHTML = json.name.toUpperCase();
+
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    if(Array.isArray(json)){
+        pokemonName.innerHTML = json[0][0].Name;
+    }
+    else{
+        pokemonName.innerHTML = json.name.toUpperCase();
+    }
     pokemonNameSection.appendChild(pokemonName);
 
     // Pokemon Type Array
@@ -137,12 +176,18 @@ function renderPokemon(json){
     let pokemonType = document.createElement("p");
     pokemonType.classList.add("pokemon-data-type");
 
-    for(let i = 0; i < pokemonTypesArray.length; i++){
-        if(pokemonTypesArray[1] === undefined){
-            pokemonType.innerHTML = `Type: ${pokemonTypesArray[i].type.name.toUpperCase()}`;
-        }
-        else {
-            pokemonType.innerHTML = `Type: ${pokemonTypesArray[0].type.name.toUpperCase()} / ${pokemonTypesArray[1].type.name.toUpperCase()}`;
+    // Some Pokémon have 1 type or 2 types but no more than 2, checking if the targeted Pokémon has one or two types then render data
+    if(Array.isArray(json)){
+        pokemonType.innerHTML = json[0][0].Types;
+    }
+    else{
+        for(let i = 0; i < pokemonTypesArray.length; i++){
+            if(pokemonTypesArray[1] === undefined){
+                pokemonType.innerHTML = `Type: ${pokemonTypesArray[i].type.name.toUpperCase()}`;
+            }
+            else {
+                pokemonType.innerHTML = `Type: ${pokemonTypesArray[0].type.name.toUpperCase()} / ${pokemonTypesArray[1].type.name.toUpperCase()}`;
+            }
         }
     }
 
@@ -154,7 +199,12 @@ function renderPokemon(json){
     // Pokemon Moves
 
     // Pokemon Moves Array
-    const pokemonMovesArray = json.moves;
+    let pokemonMovesArray = json.moves;
+
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    if(Array.isArray(json)){
+        pokemonMovesArray = json[0][0].Move1;
+    }
 
     // Store all moves in this form
     let pokemonMovesForm = document.createElement("form");
@@ -174,33 +224,67 @@ function renderPokemon(json){
     let pokemonMove4 = document.createElement("select");
 
     // Store all moves learned by this Pokemon in each select to be able to change your selected moves.
-    pokemonMovesArray.forEach(move => {
+    if(Array.isArray(json)){
+        
+        for(let i = 0; i < json[0][0].Move1.length; i++){
 
-        // List for first Move Option
-        let pokemonMove1Option = document.createElement("option");
-        pokemonMove1Option.value = move.move.name;
-        pokemonMove1Option.innerHTML = move.move.name;
-        pokemonMove1.appendChild(pokemonMove1Option);
+            let pokemonMove1Option = document.createElement("option");
+            pokemonMove1Option.value = json[0][0].Move1[i];
+            pokemonMove1Option.innerHTML = json[0][0].Move1[i];
+            pokemonMove1.appendChild(pokemonMove1Option);
+        }
+        for(let i = 0; i < json[0][0].Move2.length; i++){
 
-        // List for second Move Option
-        let pokemonMove2Option = document.createElement("option");
-        pokemonMove2Option.value = move.move.name;
-        pokemonMove2Option.innerHTML = move.move.name;
-        pokemonMove2.appendChild(pokemonMove2Option);
+            let pokemonMove2Option = document.createElement("option");
+            pokemonMove2Option.value = json[0][0].Move2[i];
+            pokemonMove2Option.innerHTML = json[0][0].Move2[i];
+            pokemonMove2.appendChild(pokemonMove2Option);
+        }
+        for(let i = 0; i < json[0][0].Move3.length; i++){
 
-        // List for third Move Option
-        let pokemonMove3Option = document.createElement("option");
-        pokemonMove3Option.value = move.move.name;
-        pokemonMove3Option.innerHTML = move.move.name;
-        pokemonMove3.appendChild(pokemonMove3Option);
+            let pokemonMove3Option = document.createElement("option");
+            pokemonMove3Option.value = json[0][0].Move3[i];
+            pokemonMove3Option.innerHTML = json[0][0].Move3[i];
+            pokemonMove3.appendChild(pokemonMove3Option);
+        }
+        for(let i = 0; i < json[0][0].Move4.length; i++){
 
-        // List for fourth Move Option
-        let pokemonMove4Option = document.createElement("option");
-        pokemonMove4Option.value = move.move.name;
-        pokemonMove4Option.innerHTML = move.move.name;
-        pokemonMove4.appendChild(pokemonMove4Option);
+            let pokemonMove4Option = document.createElement("option");
+            pokemonMove4Option.value = json[0][0].Move4[i];
+            pokemonMove4Option.innerHTML = json[0][0].Move4[i];
+            pokemonMove4.appendChild(pokemonMove4Option);
+        }
+    }
+    else{
+        pokemonMovesArray.forEach(move => {
 
-    });
+            // List for first Move Option
+            let pokemonMove1Option = document.createElement("option");
+            pokemonMove1Option.value = move.move.name;
+            pokemonMove1Option.innerHTML = move.move.name;
+            pokemonMove1.appendChild(pokemonMove1Option);
+        
+            // List for second Move Option
+            let pokemonMove2Option = document.createElement("option");
+            pokemonMove2Option.value = move.move.name;
+            pokemonMove2Option.innerHTML = move.move.name;
+            pokemonMove2.appendChild(pokemonMove2Option);
+        
+            // List for third Move Option
+            let pokemonMove3Option = document.createElement("option");
+            pokemonMove3Option.value = move.move.name;
+            pokemonMove3Option.innerHTML = move.move.name;
+            pokemonMove3.appendChild(pokemonMove3Option);
+        
+            // List for fourth Move Option
+            let pokemonMove4Option = document.createElement("option");
+            pokemonMove4Option.value = move.move.name;
+            pokemonMove4Option.innerHTML = move.move.name;
+            pokemonMove4.appendChild(pokemonMove4Option);
+        
+        });
+    }
+
     pokemonMovesForm.appendChild(pokemonMove1);
     pokemonMovesForm.appendChild(pokemonMove2);
     pokemonMovesForm.appendChild(pokemonMove3);
@@ -227,7 +311,12 @@ function renderPokemon(json){
 
     // Pokemon Abilities
 
-    const pokemonAbilitiesArray = json.abilities;
+    let pokemonAbilitiesArray = json.abilities;
+
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    if(Array.isArray(json)){
+        pokemonAbilitiesArray = json[0][0].Abilities;
+    }
 
     // Store abilities in this form
     let pokemonAbilityForm = document.createElement("form");
@@ -238,12 +327,24 @@ function renderPokemon(json){
     let pokemonAbilities = document.createElement("select");
 
     // Store all abilities for this Pokemon
-    pokemonAbilitiesArray.forEach(ability => {
-        let pokemonAbility = document.createElement("option");
-        pokemonAbility.value = ability.ability.name;
-        pokemonAbility.innerHTML = ability.ability.name;
-        pokemonAbilities.appendChild(pokemonAbility);
-    });
+
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    if(Array.isArray(json)){
+        for(let i = 0; i < json[0][0].Abilities.length; i++){
+            let pokemonAbility = document.createElement("option");
+            pokemonAbility.value = json[0][0].Abilities[i];
+            pokemonAbility.innerHTML = json[0][0].Abilities[i];
+            pokemonAbilities.appendChild(pokemonAbility);
+        }
+    }
+    else{
+        pokemonAbilitiesArray.forEach(ability => {
+            let pokemonAbility = document.createElement("option");
+            pokemonAbility.value = ability.ability.name;
+            pokemonAbility.innerHTML = ability.ability.name;
+            pokemonAbilities.appendChild(pokemonAbility);
+        });
+    }
 
     pokemonAbilityForm.appendChild(pokemonAbilities);
     pokemonDataContainer.appendChild(pokemonAbilityForm);
@@ -270,9 +371,7 @@ function deletePokemon(e){
 function savePokemon(e){
     // Save element data to LocalStorage Object
     localStorageObject.Sprite = e.parentElement.children[0].src;
-    localStorageObject.SpiteAlt = e.parentElement.children[0].alt;
     localStorageObject.ShinySprite = e.parentElement.children[1].src;
-    localStorageObject.ShinySpriteAlt = e.parentElement.children[1].alt;
     localStorageObject.Name = e.parentElement.children[2].children[0].innerHTML;
     localStorageObject.Types = e.parentElement.children[2].children[1].innerHTML;
 
