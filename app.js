@@ -67,6 +67,8 @@ pokemonSectionEl.addEventListener("change", (event) => {
     }
 });
 
+// CREATE
+
 // Fetch API with specific Pokemon name from input value.
 async function fetchPokemonData(pokemonName)  {
     const pokemonUrl = API_URL + `pokemon/${pokemonName}`;
@@ -91,22 +93,6 @@ async function fetchPokemonData(pokemonName)  {
     
             console.error(error);
         }
-    }
-}
-
-// Get data from Local Storage to render saved Pokémon
-function localStoragePokemonData(pokemonName){
-    if(localStorage.length <= 0){
-        console.error("You have no saved Pokemon.");
-    }
-    else{
-        for(let i = 0; i < localStorage.length; i++){
-    
-            if(localStorage.key(i) === pokemonName.toUpperCase()){
-                localStorageList.push(JSON.parse(localStorage.getItem(`${pokemonName.toUpperCase()}`)));
-            }
-        }
-        renderPokemon(localStorageList);
     }
 }
 
@@ -368,18 +354,25 @@ function renderPokemon(json){
     pokemonDataContainer.appendChild(deleteButton);
 }
 
-// Delete current Pokémon Element
-function deletePokemon(e){
-    console.log(e.parentElement);
-    if(localStorage.length !== 0){
+// READ
+
+// Get data from Local Storage to render saved Pokémon
+function localStoragePokemonData(pokemonName){
+    if(localStorage.length <= 0){
+        console.error("You have no saved Pokemon.");
+    }
+    else{
         for(let i = 0; i < localStorage.length; i++){
-            if(e.parentElement.children[2].children[0].innerHTML === localStorage.key(i)){
-                localStorage.removeItem(`${localStorage.key(i)}`);
+    
+            if(localStorage.key(i) === pokemonName.toUpperCase()){
+                localStorageList.push(JSON.parse(localStorage.getItem(`${pokemonName.toUpperCase()}`)));
             }
         }
+        renderPokemon(localStorageList);
     }
-    e.parentElement.remove();
 }
+
+// UPDATE
 
 // Save current Pokémon Element to object => array => localStorage
 function savePokemon(e){
@@ -451,4 +444,19 @@ function changeSprite(e){
 function saveToLocalStorage(array){
     localStorage.setItem(`${array[0].Name}`, JSON.stringify(array));
     localStorageList = [];
+}
+
+// DELETE
+
+// Delete current Pokémon Element and delete Pokemon data from Local Storage
+function deletePokemon(e){
+
+    if(localStorage.length !== 0){
+        for(let i = 0; i < localStorage.length; i++){
+            if(e.parentElement.children[2].children[0].innerHTML === localStorage.key(i)){
+                localStorage.removeItem(`${localStorage.key(i)}`);
+            }
+        }
+    }
+    e.parentElement.remove();
 }
