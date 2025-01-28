@@ -161,13 +161,15 @@ footer {
 
     /* Pokemon Data Section Styling */
     #pokemon-new-section,
-    #pokemon-load-section {
+    #pokemon-load-section,
+    #clear-save-data {
         display: grid;
         grid-template-rows: repeat(2, auto);
         margin-top: 1rem;
 
         #pokemon-new-data-form,
-        #pokemon-load-data-form {
+        #pokemon-load-data-form,
+        #clear-save-data-form {
             display: grid;
             grid-template-columns: repeat(2, auto);
             grid-template-rows: repeat(2, auto);
@@ -198,6 +200,10 @@ footer {
                 justify-self: center;
                 align-self: center;
                 width: 90%;
+            }
+
+            #btn-clear-submit {
+                grid-column: span 2;
             }
         }
     }

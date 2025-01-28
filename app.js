@@ -23,6 +23,7 @@ let localStorageObject = {
 const pokemonSectionEl = document.getElementById("pokemon-section");
 const pokemonNewDataFormEl = document.getElementById("pokemon-new-data-form");
 const pokemonLoadDataFormEl = document.getElementById("pokemon-load-data-form");
+const clearSavedDataEl = document.getElementById("clear-save-data-form");
 
 // When submit is clicked get value from input and then fetch API.
 pokemonNewDataFormEl.addEventListener("submit", (event) => {
@@ -43,6 +44,11 @@ pokemonLoadDataFormEl.addEventListener("submit", (event) => {
     }
 });
 
+clearSavedDataEl.addEventListener("submit", (event) => {
+    event.preventDefault();
+    localStorage.clear();
+});
+
 // Check which button is clicked (either delete or save button) and execute the function of the corresponding button.
 pokemonSectionEl.addEventListener("click", (event) => {
     if(event.target.classList.contains("delete-button")){
@@ -57,7 +63,7 @@ pokemonSectionEl.addEventListener("click", (event) => {
 pokemonSectionEl.addEventListener("change", (event) => {
     if(event.target.classList.contains("pokemon-shiny-checkbox")){
 
-            changeSprite(event.target);
+        changeSprite(event.target);
     }
 });
 
@@ -364,6 +370,14 @@ function renderPokemon(json){
 
 // Delete current Pokémon Element
 function deletePokemon(e){
+    console.log(e.parentElement);
+    if(localStorage.length !== 0){
+        for(let i = 0; i < localStorage.length; i++){
+            if(e.parentElement.children[2].children[0].innerHTML === localStorage.key(i)){
+                localStorage.removeItem(`${localStorage.key(i)}`);
+            }
+        }
+    }
     e.parentElement.remove();
 }
 
