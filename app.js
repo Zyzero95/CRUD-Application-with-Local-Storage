@@ -197,8 +197,6 @@ function renderPokemon(json){
     pokemonNameSection.appendChild(pokemonType);
     pokemonDataContainer.appendChild(pokemonNameSection);
 
-
-
     // Pokemon Moves
 
     // Pokemon Moves Array
