@@ -3,6 +3,9 @@ const API_URL = "https://pokeapi.co/api/v2/";
 
 // Theme - A Pokémon Teambuilder. (Choose Pokémon, Moveset, Regular/Shiny, Ability) Up to 6 Pokémon in a team.
 
+//TODO: bättre design/ Ordna felhantering så felet syns på UI/ städa och reformera kod.
+// EV: Göra så delete button bara tar bort elementen men inte ifrån LocalStorage, möjligtvis en till knapp som tar bort från LocalStorage.
+
 // Empty object used for updating Local Storage
 let localStorageList = [];
 
@@ -49,18 +52,39 @@ pokemonLoadDataFormEl.addEventListener("submit", (event) => {
     }
 });
 
+// Button for clearing LocalStorage.
 clearSavedDataEl.addEventListener("submit", (event) => {
     event.preventDefault();
     localStorage.clear();
 });
 
-// Check which button is clicked (either delete or save button) and execute the function of the corresponding button.
+// Check which button is clicked and execute the function of the corresponding button.
 pokemonSectionEl.addEventListener("click", (event) => {
     if(event.target.classList.contains("delete-button")){
         deletePokemon(event.target);
     }
     else if(event.target.classList.contains("save-button")){
         savePokemon(event.target);
+    }
+    else if(event.target.classList.contains("move-1-desc")){
+        let moveName = event.target.parentElement.getElementsByClassName("move-select-1")[0].value;
+        fetchMoveData(moveName, event.target);
+    }
+    else if(event.target.classList.contains("move-2-desc")){
+        let moveName = event.target.parentElement.getElementsByClassName("move-select-2")[0].value;
+        fetchMoveData(moveName, event.target);
+    }
+    else if(event.target.classList.contains("move-3-desc")){
+        let moveName = event.target.parentElement.getElementsByClassName("move-select-3")[0].value;
+        fetchMoveData(moveName, event.target);
+    }
+    else if(event.target.classList.contains("move-4-desc")){
+        let moveName = event.target.parentElement.getElementsByClassName("move-select-4")[0].value;
+        fetchMoveData(moveName, event.target);
+    }
+    else if(event.target.classList.contains("pokemon-ability-desc")){
+        let abilityName = event.target.parentElement.getElementsByClassName("pokemon-ability-select")[0].value;
+        fetchAbilityData(abilityName, event.target);
     }
 });
 
@@ -101,19 +125,57 @@ async function fetchPokemonData(pokemonName)  {
     }
 }
 
+async function fetchMoveData(moveName, e){
+    const moveURL = API_URL + `move/${moveName}`;
+
+    try {
+        const response = await fetch(moveURL);
+
+        if(!response.ok){
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+
+        readMoveDesc(json, e);
+    }
+    catch (error){
+        console.error(error);
+        
+    }
+}
+
+async function fetchAbilityData(abilityName, e){
+    const abilityURL = API_URL + `ability/${abilityName}`;
+
+    try {
+        const response = await fetch(abilityURL);
+
+        if(!response.ok){
+            throw new Error(`Response status: ${response.status}`);
+        }
+
+        const json = await response.json();
+
+        readAbilityDesc(json, e);
+    }
+    catch (error){
+        console.error(error);
+        
+    }
+}
+
 // Render Pokémon data on the website
 function renderPokemon(json){
     
     // Pokemon Data Container
     let pokemonDataContainer = document.createElement("section");
     pokemonDataContainer.classList.add("pokemon-data-container");
-    pokemonDataContainer.id = "pokemon-data-container";
     pokemonSectionEl.appendChild(pokemonDataContainer);
 
     // Pokemon Sprite
     let pokemonSprite = document.createElement("img");
     pokemonSprite.classList.add("pokemon-sprite");
-    pokemonSprite.id = "pokemon-sprite";
 
     // Check if the Pokemon data is added(API) or loaded(LocalStorage)
     if(Array.isArray(json)){
@@ -210,25 +272,91 @@ function renderPokemon(json){
     // Store all moves in this form
     let pokemonMovesForm = document.createElement("form");
     pokemonMovesForm.classList.add("pokemon-moves-form");
-    pokemonMovesForm.innerHTML = "Pokemon Moves";
+
+    // Create pop up Modal to read description of moves
+    let pokemonMoveOverlay = document.createElement("section");
+    pokemonMoveOverlay.classList.add("pokemon-move-overlay");
+    pokemonMoveOverlay.id = "overlay";
+    pokemonMovesForm.appendChild(pokemonMoveOverlay);
+
+    let pokemonMovePopUpContent = document.createElement("article");
+    pokemonMovePopUpContent.classList.add("pokemon-move-overlay-content");
+    pokemonMoveOverlay.appendChild(pokemonMovePopUpContent);
+
+    let pokemonMovePopUpHeading = document.createElement("h2");
+    pokemonMovePopUpHeading.classList.add("pokemon-move-overlay-heading");
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpHeading);
+
+    let pokemonMovePopUpClose = document.createElement("a");
+    pokemonMovePopUpClose.classList.add("pokemon-move-overlay-close");
+    pokemonMovePopUpClose.href = "#";
+    pokemonMovePopUpClose.innerHTML = "&times;";
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpClose);
+
+    let pokemonMovePopUpType = document.createElement("p");
+    pokemonMovePopUpType.classList.add("pokemon-move-overlay-type");
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpType);
+
+    let pokemonMovePopUpPower = document.createElement("p");
+    pokemonMovePopUpPower.classList.add("pokemon-move-overlay-power");
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpPower);
+
+    let pokemonMovePopUpPP = document.createElement("p");
+    pokemonMovePopUpPP.classList.add("pokemon-move-overlay-pp");
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpPP);
+
+    let pokemonMovePopUpAcc = document.createElement("p");
+    pokemonMovePopUpAcc.classList.add("pokemon-move-overlay-acc");
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpAcc);
+
+    let pokemonMovePopUpDesc = document.createElement("p");
+    pokemonMovePopUpDesc.classList.add("pokemon-move-overlay-desc");
+    pokemonMovePopUpContent.appendChild(pokemonMovePopUpDesc);
+
+    // Pokemon Move Text
+    let pokemonMoveText = document.createElement("p");
+    pokemonMoveText.classList.add("pokemon-move-text");
+    pokemonMoveText.innerHTML = "Moves";
+    pokemonMovesForm.appendChild(pokemonMoveText);
 
     // Move Selection 1
     let pokemonMove1 = document.createElement("select");
     pokemonMove1.classList.add("move-select-1");
+    let pokemonMove1Desc = document.createElement("a");
+    pokemonMove1Desc.classList.add("move-1-desc");
+    pokemonMove1Desc.href = "#overlay";
+    pokemonMove1Desc.innerHTML = "Desc.";
+    pokemonMovesForm.appendChild(pokemonMove1Desc);
 
     // Move Selection 2
     let pokemonMove2 = document.createElement("select");
     pokemonMove2.classList.add("move-select-2");
+    let pokemonMove2Desc = document.createElement("a");
+    pokemonMove2Desc.classList.add("move-2-desc");
+    pokemonMove2Desc.href = "#overlay";
+    pokemonMove2Desc.innerHTML = "Desc.";
+    pokemonMovesForm.appendChild(pokemonMove2Desc);
 
     // Move Selection 3
     let pokemonMove3 = document.createElement("select");
     pokemonMove3.classList.add("move-select-3");
+    let pokemonMove3Desc = document.createElement("a");
+    pokemonMove3Desc.classList.add("move-3-desc");
+    pokemonMove3Desc.href = "#overlay";
+    pokemonMove3Desc.innerHTML = "Desc.";
+    pokemonMovesForm.appendChild(pokemonMove3Desc);
 
     // Move Selection 4
     let pokemonMove4 = document.createElement("select");
     pokemonMove4.classList.add("move-select-4");
+    let pokemonMove4Desc = document.createElement("a");
+    pokemonMove4Desc.classList.add("move-4-desc");
+    pokemonMove4Desc.href = "#overlay";
+    pokemonMove4Desc.innerHTML = "Desc.";
+    pokemonMovesForm.appendChild(pokemonMove4Desc);
 
     // Store all moves learned by this Pokemon in each select to be able to change your selected moves.
+    // Uses a variable to pick the last selected element value when saved to show the value as selected.
     if(Array.isArray(json)){
         
         for(let i = 0; i < json[0][0].Move1.length; i++){
@@ -274,7 +402,6 @@ function renderPokemon(json){
     }
     else{
         pokemonMovesArray.forEach(move => {
-
             // List for first Move Option
             let pokemonMove1Option = document.createElement("option");
             pokemonMove1Option.value = move.move.name;
@@ -328,7 +455,6 @@ function renderPokemon(json){
         }
     }
     pokemonShinyContainer.appendChild(pokemonShinyCheckbox);
-
     pokemonDataContainer.appendChild(pokemonShinyContainer);
 
     // Pokemon Abilities
@@ -348,6 +474,36 @@ function renderPokemon(json){
     // Pokemon Ability Selection
     let pokemonAbilities = document.createElement("select");
     pokemonAbilities.classList.add("pokemon-ability-select");
+
+    let pokemonAbilityDesc = document.createElement("a");
+    pokemonAbilityDesc.classList.add("pokemon-ability-desc");
+    pokemonAbilityDesc.href = "#ability-overlay";
+    pokemonAbilityDesc.innerHTML = "Desc."
+    pokemonAbilityForm.appendChild(pokemonAbilityDesc);
+
+    // Create pop up Modal to read description of moves
+    let pokemonAbilityOverlay = document.createElement("section");
+    pokemonAbilityOverlay.classList.add("pokemon-ability-overlay");
+    pokemonAbilityOverlay.id = "ability-overlay";
+    pokemonAbilityForm.appendChild(pokemonAbilityOverlay);
+
+    let pokemonAbilityPopUpContent = document.createElement("article");
+    pokemonAbilityPopUpContent.classList.add("pokemon-ability-overlay-content");
+    pokemonAbilityOverlay.appendChild(pokemonAbilityPopUpContent);
+
+    let pokemonAbilityPopUpHeading = document.createElement("h2");
+    pokemonAbilityPopUpHeading.classList.add("pokemon-ability-overlay-heading");
+    pokemonAbilityPopUpContent.appendChild(pokemonAbilityPopUpHeading);
+
+    let pokemonAbilityPopUpClose = document.createElement("a");
+    pokemonAbilityPopUpClose.classList.add("pokemon-ability-overlay-close");
+    pokemonAbilityPopUpClose.href = "#";
+    pokemonAbilityPopUpClose.innerHTML = "&times;";
+    pokemonAbilityPopUpContent.appendChild(pokemonAbilityPopUpClose);
+
+    let pokemonAbilityPopUpDesc = document.createElement("p");
+    pokemonAbilityPopUpDesc.classList.add("pokemon-ability-overlay-desc");
+    pokemonAbilityPopUpContent.appendChild(pokemonAbilityPopUpDesc);
 
     // Store all abilities for this Pokemon
 
@@ -404,6 +560,44 @@ function localStoragePokemonData(pokemonName){
         }
         renderPokemon(localStorageList);
     }
+}
+
+// Using the target element to find the elements we want to change and a fetched API for the targeted move name.
+function readMoveDesc(json, e){
+    // Save target article to make it easier to access the individual elements we want to change.
+    let overLayContent = e.parentElement.getElementsByClassName("pokemon-move-overlay")[0].getElementsByClassName("pokemon-move-overlay-content")[0];
+
+    // Overlay Heading
+    overLayContent.getElementsByClassName("pokemon-move-overlay-heading")[0].innerHTML = json.name.toUpperCase();
+
+    // Overlay Type
+    overLayContent.getElementsByClassName("pokemon-move-overlay-type")[0].innerHTML = `Type: ${json.type.name.toUpperCase()}`;
+
+    // Overlay Power
+    overLayContent.getElementsByClassName("pokemon-move-overlay-power")[0].innerHTML = `Power: ${json.power}`;
+
+    // Overlay PP
+    overLayContent.getElementsByClassName("pokemon-move-overlay-pp")[0].innerHTML = `PP: ${json.pp}`;
+
+    // Overlay Accuracy
+    overLayContent.getElementsByClassName("pokemon-move-overlay-acc")[0].innerHTML = `Accuracy: ${json.accuracy}`;
+
+    // Overlay Description
+    overLayContent.getElementsByClassName("pokemon-move-overlay-desc")[0].innerHTML = json.effect_entries[0].effect;
+    
+}
+
+// Using the target element to find the elements we want to change and a fetched API for the targeted ability name.
+function readAbilityDesc(json, e){
+    // Save target article to make it easier to access the individual elements we want to change.
+    let overLayContent = e.parentElement.getElementsByClassName("pokemon-ability-overlay")[0].getElementsByClassName("pokemon-ability-overlay-content")[0];
+    
+    // Overlay Heading
+    overLayContent.getElementsByClassName("pokemon-ability-overlay-heading")[0].innerHTML = json.name.toUpperCase();
+
+    // Overlay Description
+    overLayContent.getElementsByClassName("pokemon-ability-overlay-desc")[0].innerHTML = json.effect_entries[1].effect;
+    
 }
 
 // UPDATE

@@ -108,6 +108,96 @@ main {
                 grid-row: 3;
                 text-align: center;
                 margin-bottom: 0.25rem;
+                display: grid;
+                grid-template-columns: repeat(2, auto);
+                grid-template-rows: repeat(5, auto);
+
+                .pokemon-move-text{
+                    grid-column: span 2;
+                    grid-row: 1;
+                }
+
+                .move-select-1{
+                    grid-column: 1;
+                    grid-row: 2;
+                }
+
+                .move-1-desc{
+                    grid-column: 2;
+                    grid-row: 2;
+                    transition: all 0.3s ease-out;
+                }
+
+                .move-select-2{
+                    grid-column: 1;
+                    grid-row: 3;
+                }
+
+                .move-2-desc{
+                    grid-column: 2;
+                    grid-row: 3;
+                    transition: all 0.3s ease-out;
+                }
+
+                .move-select-3{
+                    grid-column: 1;
+                    grid-row: 4;
+                }
+
+                .move-3-desc{
+                    grid-column: 2;
+                    grid-row: 4;
+                    transition: all 0.3s ease-out;
+                }
+
+                .move-select-4{
+                    grid-column: 1;
+                    grid-row: 5;
+                }
+
+                .move-4-desc{
+                    grid-column: 2;
+                    grid-row: 5;
+                    transition: all 0.3s ease-out;
+                }
+            }
+
+            #overlay,
+            #ability-overlay{
+                position: fixed;
+                top: 0rem;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.7);
+                transition: opacity 500ms;
+                display: none;
+                opacity: 0;
+            }
+
+            #overlay:target,
+            #ability-overlay:target{
+                display: block;
+                opacity: 1;
+            }
+
+            .pokemon-move-overlay-content,
+            .pokemon-ability-overlay-content{
+                background-color: white;
+                margin-top: 12rem;
+                margin-left: 10rem;
+                margin-right: 10rem;
+            }
+
+            .pokemon-move-overlay-close,
+            .pokemon-ability-overlay-close{
+                display: inline-block;
+                color: black;
+                width: 2rem;
+                height: 2rem;
+                position: absolute;
+                top: 12rem;
+                right: 10rem;
             }
 
             .pokemon-shiny-container{
