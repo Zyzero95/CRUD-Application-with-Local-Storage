@@ -1,28 +1,30 @@
-// DOM Selectors
+// DOM Selector.
 const pokemonSectionEl = document.getElementById("pokemon-section");
 
-
-
-// Render Pokémon data on the website
+// Render Pokémon data on the website.
 export default function renderPokemon(json){
     
-    // Pokemon Data Container
+    // Pokemon Data Container.
     let pokemonDataContainer = document.createElement("section");
     pokemonDataContainer.classList.add("pokemon-data-container");
     pokemonSectionEl.appendChild(pokemonDataContainer);
 
-    // Pokemon Sprite
+    // Pokemon Sprite.
     let pokemonSprite = document.createElement("img");
     pokemonSprite.classList.add("pokemon-sprite");
 
-    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage).
     if(Array.isArray(json)){
+        // Add regular sprite from Local Storage.
         pokemonSprite.src = json[0][0].Sprite;
     }
     else {
+        // Add regular sprite from API.
         pokemonSprite.src = json.sprites.front_default;
     }
     pokemonSprite.alt = "It's the Pokémon of your choice!";
+
+    // Check if isShiny boolean is true or not to change styling of the sprites.
     if(Array.isArray(json) && json[0][0].isShiny === true){
         pokemonSprite.style.display = "none";
     }
@@ -31,18 +33,22 @@ export default function renderPokemon(json){
     }
     pokemonDataContainer.appendChild(pokemonSprite);
 
-    // Pokemon Shiny Sprite
+    // Pokemon Shiny Sprite.
     let pokemonShinySprite = document.createElement("img");
     pokemonShinySprite.classList.add("pokemon-shiny-sprite");
 
-    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage).
     if(Array.isArray(json)){
+        // Add shiny sprite from Local Storage.
         pokemonShinySprite.src = json[0][0].ShinySprite;
     }
     else{
+        // Add shiny sprite from API.
         pokemonShinySprite.src = json.sprites.front_shiny;
     }
     pokemonShinySprite.alt = "It's the shiny version of the Pokémon of your choice!"
+
+    // Check if isShiny boolean is true or not to change styling of the sprites.
     if(Array.isArray(json) && json[0][0].isShiny === true){
         pokemonShinySprite.style.display = "block";
     }
@@ -51,31 +57,33 @@ export default function renderPokemon(json){
     }
     pokemonDataContainer.appendChild(pokemonShinySprite);
 
-    // Pokemon Name and Type Section
+    // Pokemon Name and Type Section.
     let pokemonNameSection = document.createElement("section");
     pokemonNameSection.classList.add("pokemon-data-name-section");
 
-    // Pokemon Name
+    // Pokemon Name.
     let pokemonName = document.createElement("p");
     pokemonName.classList.add("pokemon-data-name");
 
-    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage).
     if(Array.isArray(json)){
+        // Local Storage Name.
         pokemonName.innerHTML = json[0][0].Name;
     }
     else{
+        // API Name.
         pokemonName.innerHTML = json.name.toUpperCase();
     }
     pokemonNameSection.appendChild(pokemonName);
 
-    // Pokemon Type Array
+    // Pokemon Type Array.
     let pokemonTypesArray = json.types;
 
-    // Pokemon Types
+    // Pokemon Types.
     let pokemonType = document.createElement("p");
     pokemonType.classList.add("pokemon-data-type");
 
-    // Some Pokémon have 1 type or 2 types but no more than 2, checking if the targeted Pokémon has one or two types then render data
+    // Some Pokémon have 1 type or 2 types but no more than 2, checking if the targeted Pokémon has one or two types then render data.
     if(Array.isArray(json)){
         pokemonType.innerHTML = json[0][0].Types;
     }
@@ -93,22 +101,22 @@ export default function renderPokemon(json){
     pokemonNameSection.appendChild(pokemonType);
     pokemonDataContainer.appendChild(pokemonNameSection);
 
-    // Pokemon Moves
+    // Pokemon Moves.
 
-    // Pokemon Moves Array
+    // Pokemon Moves Array.
     let pokemonMovesArray = json.moves;
 
-    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage).
     if(Array.isArray(json)){
         pokemonMovesArray = json[0][0].Move1;
     }
 
-    // Store all moves in this form
+    // Store all moves in this form.
     let pokemonMovesForm = document.createElement("form");
     pokemonMovesForm.classList.add("pokemon-moves-form");
     pokemonMovesForm.id = "pokemon-moves-form";
 
-    // Create pop up Modal to read description of moves
+    // Create pop up Modal to read description of moves.
     let pokemonMoveOverlay = document.createElement("section");
     pokemonMoveOverlay.classList.add("pokemon-move-overlay");
     pokemonMoveOverlay.id = `#${pokemonName.innerHTML}-move-overlay`;
@@ -157,13 +165,13 @@ export default function renderPokemon(json){
     pokemonMovePopUpDesc.classList.add("pokemon-move-overlay-desc");
     pokemonMovePopUpContent.appendChild(pokemonMovePopUpDesc);
 
-    // Pokemon Move Text
+    // Pokemon Move Text.
     let pokemonMoveText = document.createElement("p");
     pokemonMoveText.classList.add("pokemon-move-text");
     pokemonMoveText.innerHTML = "Moves";
     pokemonMovesForm.appendChild(pokemonMoveText);
 
-    // Move Selection 1
+    // Move Selection 1.
     let pokemonMove1 = document.createElement("select");
     pokemonMove1.classList.add("move-select-1");
     let pokemonMove1Desc = document.createElement("a");
@@ -172,7 +180,7 @@ export default function renderPokemon(json){
     pokemonMove1Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove1Desc);
 
-    // Move Selection 2
+    // Move Selection 2.
     let pokemonMove2 = document.createElement("select");
     pokemonMove2.classList.add("move-select-2");
     let pokemonMove2Desc = document.createElement("a");
@@ -181,7 +189,7 @@ export default function renderPokemon(json){
     pokemonMove2Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove2Desc);
 
-    // Move Selection 3
+    // Move Selection 3.
     let pokemonMove3 = document.createElement("select");
     pokemonMove3.classList.add("move-select-3");
     let pokemonMove3Desc = document.createElement("a");
@@ -190,7 +198,7 @@ export default function renderPokemon(json){
     pokemonMove3Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove3Desc);
 
-    // Move Selection 4
+    // Move Selection 4.
     let pokemonMove4 = document.createElement("select");
     pokemonMove4.classList.add("move-select-4");
     let pokemonMove4Desc = document.createElement("a");
@@ -203,6 +211,7 @@ export default function renderPokemon(json){
     // Uses a variable to pick the last selected element value when saved to show the value as selected.
     if(Array.isArray(json)){
         
+        // Store API data to Select Move 1 Option values.
         for(let i = 0; i < json[0][0].Move1.length; i++){
 
             let pokemonMove1Option = document.createElement("option");
@@ -213,6 +222,7 @@ export default function renderPokemon(json){
                 pokemonMove1Option.selected = true;
             }
         }
+        // Store API data to Select Move 2 Option values.
         for(let i = 0; i < json[0][0].Move2.length; i++){
 
             let pokemonMove2Option = document.createElement("option");
@@ -223,6 +233,7 @@ export default function renderPokemon(json){
                 pokemonMove2Option.selected = true;
             }
         }
+        // Store API data to Select Move 3 Option values.
         for(let i = 0; i < json[0][0].Move3.length; i++){
 
             let pokemonMove3Option = document.createElement("option");
@@ -233,6 +244,7 @@ export default function renderPokemon(json){
                 pokemonMove3Option.selected = true;
             }
         }
+        // Store API data to Select Move 4 Option values.
         for(let i = 0; i < json[0][0].Move4.length; i++){
 
             let pokemonMove4Option = document.createElement("option");
@@ -246,25 +258,25 @@ export default function renderPokemon(json){
     }
     else{
         pokemonMovesArray.forEach(move => {
-            // List for first Move Option
+            // List for first Move Option.
             let pokemonMove1Option = document.createElement("option");
             pokemonMove1Option.value = move.move.name;
             pokemonMove1Option.innerHTML = move.move.name;
             pokemonMove1.appendChild(pokemonMove1Option);
         
-            // List for second Move Option
+            // List for second Move Option.
             let pokemonMove2Option = document.createElement("option");
             pokemonMove2Option.value = move.move.name;
             pokemonMove2Option.innerHTML = move.move.name;
             pokemonMove2.appendChild(pokemonMove2Option);
         
-            // List for third Move Option
+            // List for third Move Option.
             let pokemonMove3Option = document.createElement("option");
             pokemonMove3Option.value = move.move.name;
             pokemonMove3Option.innerHTML = move.move.name;
             pokemonMove3.appendChild(pokemonMove3Option);
         
-            // List for fourth Move Option
+            // List for fourth Move Option.
             let pokemonMove4Option = document.createElement("option");
             pokemonMove4Option.value = move.move.name;
             pokemonMove4Option.innerHTML = move.move.name;
@@ -279,17 +291,17 @@ export default function renderPokemon(json){
     pokemonMovesForm.appendChild(pokemonMove4);
     pokemonDataContainer.appendChild(pokemonMovesForm);
 
-    // Pokemon Shint Container for Text and Checkbox
+    // Pokemon Shint Container for Text and Checkbox.
     let pokemonShinyContainer = document.createElement("section");
     pokemonShinyContainer.classList.add("pokemon-shiny-container");
 
-    // Pokemon Shiny Text
+    // Pokemon Shiny Text.
     let pokemonShinyText = document.createElement("p");
     pokemonShinyText.classList.add("pokemon-shiny-text");
     pokemonShinyText.innerHTML = "Shiny";
     pokemonShinyContainer.appendChild(pokemonShinyText);
 
-    // Pokemon Shiny Checkbox
+    // Pokemon Shiny Checkbox.
     let pokemonShinyCheckbox = document.createElement("input");
     pokemonShinyCheckbox.classList.add("pokemon-shiny-checkbox");
     pokemonShinyCheckbox.setAttribute("type", "checkbox");
@@ -301,22 +313,22 @@ export default function renderPokemon(json){
     pokemonShinyContainer.appendChild(pokemonShinyCheckbox);
     pokemonDataContainer.appendChild(pokemonShinyContainer);
 
-    // Pokemon Abilities
+    // Pokemon Abilities.
 
     let pokemonAbilitiesArray = json.abilities;
 
-    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage).
     if(Array.isArray(json)){
         pokemonAbilitiesArray = json[0][0].Abilities;
     }
 
-    // Store abilities in this form
+    // Store abilities in this form.
     let pokemonAbilityForm = document.createElement("form");
     pokemonAbilityForm.classList.add("pokemon-ability-form");
     pokemonAbilityForm.id = `${pokemonName.innerHTML}-ability-overlay-form`;
     pokemonAbilityForm.innerHTML = "Ability";
 
-    // Pokemon Ability Selection
+    // Pokemon Ability Selection.
     let pokemonAbilities = document.createElement("select");
     pokemonAbilities.classList.add("pokemon-ability-select");
 
@@ -326,7 +338,7 @@ export default function renderPokemon(json){
     pokemonAbilityDesc.innerHTML = "Desc."
     pokemonAbilityForm.appendChild(pokemonAbilityDesc);
 
-    // Create pop up Modal to read description of moves
+    // Create pop up Modal to read description of moves.
     let pokemonAbilityOverlay = document.createElement("section");
     pokemonAbilityOverlay.classList.add("pokemon-ability-overlay");
     pokemonAbilityOverlay.id = `#${pokemonName.innerHTML}-ability-overlay`;
@@ -359,9 +371,10 @@ export default function renderPokemon(json){
     pokemonAbilityPopUpDesc.classList.add("pokemon-ability-overlay-desc");
     pokemonAbilityPopUpContent.appendChild(pokemonAbilityPopUpDesc);
 
-    // Store all abilities for this Pokemon
+    // Store all abilities for this Pokemon.
 
-    // Check if the Pokemon data is added(API) or loaded(LocalStorage)
+    // Check if the Pokemon data is added(API) or loaded(LocalStorage).
+    // Stores data from API to Ability Select Option values.
     if(Array.isArray(json)){
         for(let i = 0; i < json[0][0].Abilities.length; i++){
             let pokemonAbility = document.createElement("option");
@@ -385,13 +398,13 @@ export default function renderPokemon(json){
     pokemonAbilityForm.appendChild(pokemonAbilities);
     pokemonDataContainer.appendChild(pokemonAbilityForm);
 
-    // Save Button
+    // Save Button.
     let saveButton = document.createElement("button");
     saveButton.classList.add("save-button");
     saveButton.innerHTML = "Save";
     pokemonDataContainer.appendChild(saveButton);
 
-    // Delete Button
+    // Delete Button.
     let deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-button");
     deleteButton.innerHTML = "Delete";

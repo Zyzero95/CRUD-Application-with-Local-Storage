@@ -1,17 +1,13 @@
-// API Url for PokéApi, a free open source REST API
+// API Url for PokéApi, a free open source REST API.
 const API_URL = "https://pokeapi.co/api/v2/";
 
-// Import functions
+// Import renderPokemon.
 import renderPokemon from "./renderPokemon.js"; 
 
-// Theme - A Pokémon Teambuilder. (Choose Pokémon, Moveset, Regular/Shiny, Ability) Up to 6 Pokémon in a team.
-
-//TODO: bättre design/ Ordna felhantering så felet syns på UI/ städa och reformera kod.
-
-// Empty object used for updating Local Storage
+// Empty object used for updating Local Storage.
 let localStorageList = [];
 
-// Stores data from API to be saved in Local Storage
+// Stores data from API to be saved in Local Storage.
 let localStorageObject = {
     Sprite: "",
     ShinySprite: "",
@@ -37,7 +33,7 @@ let apiPageData = {
     abilityName: ""
 };
 
-// DOM Selectors
+// DOM Selectors.
 const pokemonSectionEl = document.getElementById("pokemon-section");
 const pokemonNewDataFormEl = document.getElementById("pokemon-new-data-form");
 const pokemonLoadDataFormEl = document.getElementById("pokemon-load-data-form");
@@ -77,42 +73,49 @@ pokemonSectionEl.addEventListener("click", (event) => {
     if(event.target.classList.contains("delete-button")){
         event.target.parentElement.remove();
     }
+    // Save to Local Storage
     else if(event.target.classList.contains("save-button")){
         savePokemon(event.target);
     }
+    // Fetch API data for Move 1 value.
     else if(event.target.classList.contains("move-1-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-1")[0].value;
         apiPageData.moveName = moveName;
         fetchPokemonData(moveName, event.target.parentElement);
     }
+    // Fetch API data for Move 2 value.
     else if(event.target.classList.contains("move-2-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-2")[0].value;
         apiPageData.moveName = moveName;
         fetchPokemonData(moveName, event.target.parentElement);
         
     }
+    // Fetch API data for Move 3 value.
     else if(event.target.classList.contains("move-3-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-3")[0].value;
         apiPageData.moveName = moveName;
         fetchPokemonData(moveName, event.target.parentElement);
     }
+    // Fetch API data for Move 4 value.
     else if(event.target.classList.contains("move-4-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-4")[0].value;
         apiPageData.moveName = moveName;
         fetchPokemonData(moveName, event.target.parentElement);
     }
+    // Fetch API data for ability value.
     else if(event.target.classList.contains("pokemon-ability-desc")){
         let abilityName = event.target.parentElement.getElementsByClassName("pokemon-ability-select")[0].value;
         apiPageData.abilityName = abilityName;
         fetchPokemonData(abilityName, event.target.parentElement);
     }
+    // Sets styling of unique modal ID.
     else if(event.target.classList.contains("pokemon-move-overlay-close") || event.target.classList.contains("pokemon-ability-overlay-close")){
         event.target.parentElement.parentElement.style.display = "none";
         event.target.parentElement.parentElement.style.opacity = "0";
     }
 });
 
-// Listens if checkbox is being changed, and if it does, execute function below
+// Listens if checkbox is being changed, and if it does, execute function below.
 pokemonSectionEl.addEventListener("change", (event) => {
     if(event.target.classList.contains("pokemon-shiny-checkbox")){
 
@@ -120,10 +123,9 @@ pokemonSectionEl.addEventListener("change", (event) => {
     }
 });
 
-// CREATE
-
 // Fetch API depending on which data value is present. pokemon name fetches pokemon data, move name fetches move data and ability name fetches ability data.
 async function fetchPokemonData(apiName, e)  {
+    // Fetch API data when clicking Add Pokemon
     if(apiName === apiPageData.pokemonName){
         
         const pokemonUrl = API_URL + `pokemon/${apiName}`;
@@ -150,6 +152,7 @@ async function fetchPokemonData(apiName, e)  {
             }
         }
     }
+    // Fetch API data when clicking on Desc. for a move.
     else if(apiName === apiPageData.moveName){
             
             const moveURL = API_URL + `move/${apiName}`;
@@ -170,6 +173,7 @@ async function fetchPokemonData(apiName, e)  {
         
             }
     }
+    // Fetch API data when clicking on Desc. for ability.
     else if(apiName === apiPageData.abilityName){
             
             const abilityURL = API_URL + `ability/${apiName}`;
@@ -193,9 +197,7 @@ async function fetchPokemonData(apiName, e)  {
     
 }
 
-// READ
-
-// Get data from Local Storage to render saved Pokémon
+// Get data from Local Storage to render saved Pokémon.
 function localStoragePokemonData(pokemonName){
     if(localStorage.length <= 0){
         console.error("You have no saved Pokemon.");
@@ -226,78 +228,76 @@ function readMoveDesc(json, e){
     overlay.style.opacity = "1";
     let overLayContent = overlay.getElementsByClassName("pokemon-move-overlay-content")[0];
     
-    // Overlay Heading
+    // Overlay Heading.
     overLayContent.getElementsByClassName("pokemon-move-overlay-heading")[0].innerHTML = json.name.toUpperCase();
 
-    // Overlay Type
+    // Overlay Type.
     overLayContent.getElementsByClassName("pokemon-move-overlay-type")[0].innerHTML = `Type: ${json.type.name.toUpperCase()}`;
 
-    // Overlay Power
+    // Overlay Power.
     overLayContent.getElementsByClassName("pokemon-move-overlay-power")[0].innerHTML = `Power: ${json.power}`;
 
-    // Overlay PP
+    // Overlay PP.
     overLayContent.getElementsByClassName("pokemon-move-overlay-pp")[0].innerHTML = `PP: ${json.pp}`;
 
-    // Overlay Accuracy
+    // Overlay Accuracy.
     overLayContent.getElementsByClassName("pokemon-move-overlay-acc")[0].innerHTML = `Accuracy: ${json.accuracy}`;
 
-    // Overlay Description
+    // Overlay Description.
     overLayContent.getElementsByClassName("pokemon-move-overlay-desc")[0].innerHTML = json.effect_entries[0].effect;
     
 }
 
 // Using the target element to find the elements we want to change and a fetched API for the targeted ability name.
 function readAbilityDesc(json, e){
-    
-    // Save target section to make it easier to access the individual elements we want to change.
+
+    // Save target section to make it easier to access the individual elements we want to change and set styling for appropriate id.
     let overlay = e.getElementsByClassName("pokemon-ability-overlay")[0];
     overlay.style.display = "block";
     overlay.style.opacity = "1";
     let overLayContent = overlay.getElementsByClassName("pokemon-ability-overlay-content")[0];
     
-    // Overlay Heading
+    // Overlay Heading.
     overLayContent.getElementsByClassName("pokemon-ability-overlay-heading")[0].innerHTML = json.name.toUpperCase();
 
-    // Overlay Description
+    // Overlay Description.
     overLayContent.getElementsByClassName("pokemon-ability-overlay-desc")[0].innerHTML = json.effect_entries[1].effect;
     
 }
 
-// UPDATE
-
-// Save current Pokémon Element to object => array => localStorage
+// Save current Pokémon Element to object => array => localStorage.
 function savePokemon(e){
     
-    // Save element data to LocalStorage Object
+    // Save element data to LocalStorage Object.
     localStorageObject.Sprite = e.parentElement.getElementsByClassName("pokemon-sprite")[0].src;
     localStorageObject.ShinySprite = e.parentElement.getElementsByClassName("pokemon-shiny-sprite")[0].src;
     localStorageObject.Name = e.parentElement.getElementsByClassName("pokemon-data-name")[0].innerHTML;
     localStorageObject.Types = e.parentElement.getElementsByClassName("pokemon-data-type")[0].innerHTML;
 
-    // Save element data array to LocalStorage Object
+    // Save element data array to LocalStorage Object.
 
-    // Save element data for moves
+    // Save element data value for move 1.
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-1")[0].length; i++){
         localStorageObject.Move1[i] = e.parentElement.getElementsByClassName("move-select-1")[0][i].value;
         localStorageObject.Move1Selected = e.parentElement.getElementsByClassName("move-select-1")[0].value;
     }
-
+    // Save element data value for move 2.
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-2")[0].length; i++){
         localStorageObject.Move2[i] = e.parentElement.getElementsByClassName("move-select-2")[0][i].value;
         localStorageObject.Move2Selected = e.parentElement.getElementsByClassName("move-select-2")[0].value;
     }
-
+    // Save element data value for move 3.
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-3")[0].length; i++){
         localStorageObject.Move3[i] = e.parentElement.getElementsByClassName("move-select-3")[0][i].value;
         localStorageObject.Move3Selected = e.parentElement.getElementsByClassName("move-select-3")[0].value;
     }
-
+    // Save element data value for move 4.
     for(let i = 0; i < e.parentElement.getElementsByClassName("move-select-4")[0].length; i++){
         localStorageObject.Move4[i] = e.parentElement.getElementsByClassName("move-select-4")[0][i].value;
         localStorageObject.Move4Selected = e.parentElement.getElementsByClassName("move-select-4")[0].value;
     }
 
-    // Save element data for abilities
+    // Save element data value for abilities.
     for(let i = 0; i < e.parentElement.getElementsByClassName("pokemon-ability-select")[0].length; i++){
         localStorageObject.Abilities[i] = e.parentElement.getElementsByClassName("pokemon-ability-select")[0][i].value;
         localStorageObject.AbilitySelected = e.parentElement.getElementsByClassName("pokemon-ability-select")[0].value;
@@ -330,7 +330,7 @@ function savePokemon(e){
     saveToLocalStorage(localStorageList);
 }
 
-// Checks if shiny checkbox is checked, then change display style for the two different img elements and the other way around
+// Checks if shiny checkbox is checked, then change display style for the two different img elements and the other way around.
 function changeSprite(e){
     if(e.checked){
         e.parentElement.parentElement.children[0].style.display = "none";
@@ -344,7 +344,7 @@ function changeSprite(e){
     }
 }
 
-// For every index in list, save it to LocalStorage.
+// Save the only present index to Local Storage and empty List.
 function saveToLocalStorage(array){
     localStorage.setItem(`${array[0].Name}`, JSON.stringify(array));
     localStorageList = [];
