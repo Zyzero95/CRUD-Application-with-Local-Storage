@@ -83,30 +83,32 @@ pokemonSectionEl.addEventListener("click", (event) => {
     else if(event.target.classList.contains("move-1-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-1")[0].value;
         apiPageData.moveName = moveName;
-        fetchPokemonData(moveName, event.target);
+        fetchPokemonData(moveName, event.target.parentElement);
     }
     else if(event.target.classList.contains("move-2-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-2")[0].value;
         apiPageData.moveName = moveName;
-        fetchPokemonData(moveName, event.target);
+        fetchPokemonData(moveName, event.target.parentElement);
+        
     }
     else if(event.target.classList.contains("move-3-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-3")[0].value;
         apiPageData.moveName = moveName;
-        fetchPokemonData(moveName, event.target);
+        fetchPokemonData(moveName, event.target.parentElement);
     }
     else if(event.target.classList.contains("move-4-desc")){
         let moveName = event.target.parentElement.getElementsByClassName("move-select-4")[0].value;
         apiPageData.moveName = moveName;
-        fetchPokemonData(moveName, event.target);
+        fetchPokemonData(moveName, event.target.parentElement);
     }
     else if(event.target.classList.contains("pokemon-ability-desc")){
         let abilityName = event.target.parentElement.getElementsByClassName("pokemon-ability-select")[0].value;
         apiPageData.abilityName = abilityName;
-        fetchPokemonData(abilityName, event.target);
-        console.log((apiPageData.abilityName));
-        console.log(event.target);
-        
+        fetchPokemonData(abilityName, event.target.parentElement);
+    }
+    else if(event.target.classList.contains("pokemon-move-overlay-close") || event.target.classList.contains("pokemon-ability-overlay-close")){
+        event.target.parentElement.parentElement.style.display = "none";
+        event.target.parentElement.parentElement.style.opacity = "0";
     }
 });
 
@@ -217,10 +219,12 @@ function localStoragePokemonData(pokemonName){
 
 // Using the target element to find the elements we want to change and a fetched API for the targeted move name.
 function readMoveDesc(json, e){
-    // Save target article to make it easier to access the individual elements we want to change.
-    
-    let overLayContent = document.getElementById(e.parentElement.id).getElementsByClassName("pokemon-move-overlay")[0].getElementsByClassName("pokemon-move-overlay-content")[0];
-    console.log(e.parentElement.id);
+
+    // Save target section to make it easier to access the individual elements we want to change.
+    let overlay = e.getElementsByClassName("pokemon-move-overlay")[0];
+    overlay.style.display = "block"
+    overlay.style.opacity = "1";
+    let overLayContent = overlay.getElementsByClassName("pokemon-move-overlay-content")[0];
     
     // Overlay Heading
     overLayContent.getElementsByClassName("pokemon-move-overlay-heading")[0].innerHTML = json.name.toUpperCase();
@@ -244,9 +248,12 @@ function readMoveDesc(json, e){
 
 // Using the target element to find the elements we want to change and a fetched API for the targeted ability name.
 function readAbilityDesc(json, e){
-    // Save target article to make it easier to access the individual elements we want to change.
-    let overLayContent = document.getElementById(e.parentElement.id).getElementsByClassName("pokemon-ability-overlay")[0].getElementsByClassName("pokemon-ability-overlay-content")[0];
-    console.log(e.parentElement.id);
+    
+    // Save target section to make it easier to access the individual elements we want to change.
+    let overlay = e.getElementsByClassName("pokemon-ability-overlay")[0];
+    overlay.style.display = "block";
+    overlay.style.opacity = "1";
+    let overLayContent = overlay.getElementsByClassName("pokemon-ability-overlay-content")[0];
     
     // Overlay Heading
     overLayContent.getElementsByClassName("pokemon-ability-overlay-heading")[0].innerHTML = json.name.toUpperCase();
@@ -312,6 +319,11 @@ function savePokemon(e){
         Move2: [],
         Move3: [],
         Move4: [],
+        Move1Selected: "",
+        Move2Selected: "",
+        Move3Selected: "",
+        Move4Selected: "",
+        AbilitySelected: "",
         Abilities: []
     };
     

@@ -162,25 +162,6 @@ main {
                 }
             }
 
-            #overlay,
-            #ability-overlay{
-                position: fixed;
-                top: 0rem;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                background: rgba(0, 0, 0, 0.7);
-                transition: opacity 500ms;
-                display: none;
-                opacity: 0;
-            }
-
-            #overlay:target,
-            #ability-overlay:target{
-                display: block;
-                opacity: 1;
-            }
-
             .pokemon-move-overlay-content,
             .pokemon-ability-overlay-content{
                 background-color: white;
@@ -299,7 +280,7 @@ footer {
     }
 }
 
-@media (width <= 1142px) {
+@media (width <= 1428px) {
 
     main {
         #pokemon-section {
@@ -309,7 +290,7 @@ footer {
     }
 }
 
-@media (width <= 800px){
+@media (width <= 1008px){
     main {
         #pokemon-section {
             grid-template-columns: 1fr;

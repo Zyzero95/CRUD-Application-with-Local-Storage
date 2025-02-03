@@ -106,12 +106,21 @@ export default function renderPokemon(json){
     // Store all moves in this form
     let pokemonMovesForm = document.createElement("form");
     pokemonMovesForm.classList.add("pokemon-moves-form");
-    pokemonMovesForm.id = `${pokemonName.innerHTML}-move-overlay-form`;
+    pokemonMovesForm.id = "pokemon-moves-form";
 
     // Create pop up Modal to read description of moves
     let pokemonMoveOverlay = document.createElement("section");
     pokemonMoveOverlay.classList.add("pokemon-move-overlay");
-    pokemonMoveOverlay.id = "overlay";
+    pokemonMoveOverlay.id = `#${pokemonName.innerHTML}-move-overlay`;
+    pokemonMoveOverlay.style.position = "fixed";
+    pokemonMoveOverlay.style.top = "0";
+    pokemonMoveOverlay.style.bottom = "0";
+    pokemonMoveOverlay.style.left = "0";
+    pokemonMoveOverlay.style.right = "0";
+    pokemonMoveOverlay.style.background = "rgba(0, 0, 0, 0.7)";
+    pokemonMoveOverlay.style.transition = "opacity 500ms";
+    pokemonMoveOverlay.style.display = "none";
+    pokemonMoveOverlay.style.opacity = "0";
     pokemonMovesForm.appendChild(pokemonMoveOverlay);
 
     let pokemonMovePopUpContent = document.createElement("article");
@@ -159,7 +168,7 @@ export default function renderPokemon(json){
     pokemonMove1.classList.add("move-select-1");
     let pokemonMove1Desc = document.createElement("a");
     pokemonMove1Desc.classList.add("move-1-desc");
-    pokemonMove1Desc.href = "#overlay";
+    pokemonMove1Desc.href = `#${pokemonName.innerHTML}-move-overlay`;
     pokemonMove1Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove1Desc);
 
@@ -168,7 +177,7 @@ export default function renderPokemon(json){
     pokemonMove2.classList.add("move-select-2");
     let pokemonMove2Desc = document.createElement("a");
     pokemonMove2Desc.classList.add("move-2-desc");
-    pokemonMove2Desc.href = "#overlay";
+    pokemonMove2Desc.href = `#${pokemonName.innerHTML}-move-overlay`;
     pokemonMove2Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove2Desc);
 
@@ -177,7 +186,7 @@ export default function renderPokemon(json){
     pokemonMove3.classList.add("move-select-3");
     let pokemonMove3Desc = document.createElement("a");
     pokemonMove3Desc.classList.add("move-3-desc");
-    pokemonMove3Desc.href = "#overlay";
+    pokemonMove3Desc.href = `#${pokemonName.innerHTML}-move-overlay`;
     pokemonMove3Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove3Desc);
 
@@ -186,7 +195,7 @@ export default function renderPokemon(json){
     pokemonMove4.classList.add("move-select-4");
     let pokemonMove4Desc = document.createElement("a");
     pokemonMove4Desc.classList.add("move-4-desc");
-    pokemonMove4Desc.href = "#overlay";
+    pokemonMove4Desc.href = `#${pokemonName.innerHTML}-move-overlay`;
     pokemonMove4Desc.innerHTML = "Desc.";
     pokemonMovesForm.appendChild(pokemonMove4Desc);
 
@@ -313,14 +322,23 @@ export default function renderPokemon(json){
 
     let pokemonAbilityDesc = document.createElement("a");
     pokemonAbilityDesc.classList.add("pokemon-ability-desc");
-    pokemonAbilityDesc.href = "#ability-overlay";
+    pokemonAbilityDesc.href = `#${pokemonName.innerHTML}-ability-overlay`;
     pokemonAbilityDesc.innerHTML = "Desc."
     pokemonAbilityForm.appendChild(pokemonAbilityDesc);
 
     // Create pop up Modal to read description of moves
     let pokemonAbilityOverlay = document.createElement("section");
     pokemonAbilityOverlay.classList.add("pokemon-ability-overlay");
-    pokemonAbilityOverlay.id = "ability-overlay";
+    pokemonAbilityOverlay.id = `#${pokemonName.innerHTML}-ability-overlay`;
+    pokemonAbilityOverlay.style.position = "fixed";
+    pokemonAbilityOverlay.style.top = "0";
+    pokemonAbilityOverlay.style.bottom = "0";
+    pokemonAbilityOverlay.style.left = "0";
+    pokemonAbilityOverlay.style.right = "0";
+    pokemonAbilityOverlay.style.background = "rgba(0, 0, 0, 0.7)";
+    pokemonAbilityOverlay.style.transition = "opacity 500ms";
+    pokemonAbilityOverlay.style.display = "none";
+    pokemonAbilityOverlay.style.opacity = "0";
     pokemonAbilityForm.appendChild(pokemonAbilityOverlay);
 
     let pokemonAbilityPopUpContent = document.createElement("article");
